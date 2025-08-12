@@ -1,0 +1,23 @@
+---
+profile_ansible::username: "ansible"
+profile_ansible::authorized_keys:
+  ansible@localhost:
+    type: "ssh-rsa"
+    key: "REPLACE_ME_WITH_VALID_SSH_PUBLIC_KEY"  # MUST be overridden in environment-specific Hiera data for production
+profile_ansible::control_nodelist:
+  - "127.0.0.1"  # TODO: Set to actual Ansible control node IP addresses
+profile_ansible::sshd_custom_cfg:
+  AuthenticationMethods: "publickey"
+  Banner: "none"
+  DisableForwarding: "no"
+  GSSAPIAuthentication: "no"
+  KerberosAuthentication: "no"
+  MaxAuthTries: "6"
+  MaxSessions: "10"
+  PasswordAuthentication: "no"
+  PubkeyAuthentication: "yes"
+  X11Forwarding: "no"
+profile_ansible::sudo_custom_cfg: |
+  Defaults:%{lookup('profile_ansible::username')} !mail_always
+  Defaults:%{lookup('profile_ansible::username')} !requiretty
+  %{lookup('profile_ansible::username')} ALL=(ALL) NOPASSWD: NOMAIL: ALL
