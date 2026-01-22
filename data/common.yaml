@@ -1,23 +1,62 @@
 ---
-profile_ansible::username: "ansible"
-profile_ansible::authorized_keys:
-  ansible@localhost:
-    type: "ssh-rsa"
-    key: "REPLACE_ME_WITH_VALID_SSH_PUBLIC_KEY"  # MUST be overridden in environment-specific Hiera data for production
 profile_ansible::control_nodelist:
-  - "127.0.0.1"  # TODO: Set to actual Ansible control node IP addresses
+  # MUST BE OVERRIDDEN IN ENVIRONMENT-SPECIFIC DATA
+  localhost:  # SET TO ACTUAL ANSIBLE CONTROL NODE HOSTNAME AND DATA
+    address: "127.0.0.1"
+    authorized_keys:
+      ansible@localhost:
+        type: "ssh-ed25519"
+        key: "REPLACE_ME_WITH_VALID_SSH_PUBLIC_KEY"
 profile_ansible::sshd_custom_cfg:
+  AllowAgentForwarding: "no"
+  AllowTcpForwarding: "no"
   AuthenticationMethods: "publickey"
   Banner: "none"
-  DisableForwarding: "no"
+  ClientAliveCountMax: "0"
+  ClientAliveInterval: "300"
+  DisableForwarding: "yes"
+  GatewayPorts: "no"
   GSSAPIAuthentication: "no"
   KerberosAuthentication: "no"
-  MaxAuthTries: "6"
-  MaxSessions: "10"
+  MaxAuthTries: "2"
+  MaxSessions: "4"
   PasswordAuthentication: "no"
+  PermitTTY: "no"
+  PermitTunnel: "no"
   PubkeyAuthentication: "yes"
   X11Forwarding: "no"
 profile_ansible::sudo_custom_cfg: |
   Defaults:%{lookup('profile_ansible::username')} !mail_always
   Defaults:%{lookup('profile_ansible::username')} !requiretty
+  Defaults:%{lookup('profile_ansible::username')} secure_path="/usr/sbin:/usr/bin:/sbin:/bin"
   %{lookup('profile_ansible::username')} ALL=(ALL) NOPASSWD: NOMAIL: ALL
+profile_ansible::username: "ansible"
+
+profile_ansible::proxy::username: "ansible-proxy"
+profile_ansible::proxy::nodelist:
+  # MUST BE OVERRIDDEN IN ENVIRONMENT-SPECIFIC DATA
+  localhost:  # SET TO ACTUAL ANSIBLE CONTROL NODE HOSTNAME AND DATA
+    address: "127.0.0.1"
+    authorized_keys:
+      ansible@localhost:
+        type: "ssh-ed25519"
+        key: "REPLACE_ME_WITH_VALID_SSH_PUBLIC_KEY"
+profile_ansible::proxy::sshd_custom_cfg:
+  AllowAgentForwarding: "no"
+  AllowTcpForwarding: "yes"
+  AuthenticationMethods: "publickey"
+  Banner: "none"
+  DisableForwarding: "no"
+  ForceCommand: "/usr/sbin/nologin"
+  GSSAPIAuthentication: "no"
+  KbdInteractiveAuthentication: "no"
+  KerberosAuthentication: "no"
+  LogLevel: "VERBOSE"
+  MaxAuthTries: "1"
+  MaxSessions: "10"
+  PasswordAuthentication: "no"
+  # PermitOpen 10.0.0.0/8:22  # RESTRICT WHERE IT CAN JUMP TO
+  PermitTTY: "no"
+  PermitTunnel: "no"
+  PubkeyAuthentication: "yes"
+  X11Forwarding: "no"

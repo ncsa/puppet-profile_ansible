@@ -29,8 +29,10 @@ include ::profile_ansible
 ## Usage
 
 You will need to provide the following parameters:
-* `authorized_keys`
 * `control_nodelist`
+
+`control_nodelist` is a Hash containing per-node `address` and `authroized_keys`.
+Refer to [REFERENCE.md](REFERENCE.md) for an example.
 
 ## Dependencies
 
