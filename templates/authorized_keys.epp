@@ -1,0 +1,4 @@
+# Managed by Puppet — DO NOT EDIT
+<% $authorized_lines.each |$line| { -%>
+<%= $line %>
+<% } -%>

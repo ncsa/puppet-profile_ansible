@@ -7,6 +7,7 @@
 ### Classes
 
 * [`profile_ansible`](#profile_ansible): Setup local ansible user
+* [`profile_ansible::proxy`](#profile_ansible--proxy): Setup optional proxy user and config for ansible access
 
 ## Classes
 
@@ -27,7 +28,6 @@ include profile_ansible
 The following parameters are available in the `profile_ansible` class:
 
 * [`username`](#-profile_ansible--username)
-* [`authorized_keys`](#-profile_ansible--authorized_keys)
 * [`control_nodelist`](#-profile_ansible--control_nodelist)
 * [`sshd_custom_cfg`](#-profile_ansible--sshd_custom_cfg)
 * [`sudo_custom_cfg`](#-profile_ansible--sudo_custom_cfg)
@@ -38,20 +38,11 @@ Data type: `String`
 
 Username that ansible controller will connect as
 
-##### <a name="-profile_ansible--authorized_keys"></a>`authorized_keys`
+##### <a name="-profile_ansible--control_nodelist"></a>`control_nodelist`
 
 Data type: `Hash`
 
-Hash of keys to be used by puppetlabs-sshkeys_core
-See https://forge.puppet.com/modules/puppetlabs/sshkeys_core
-The 'user' parameter can be omitted as it uses $username
-
-##### <a name="-profile_ansible--control_nodelist"></a>`control_nodelist`
-
-Data type: `Array[String, 1]`
-
-Array of IP addresses of the Ansible control nodes
-Login access for this user is limited to these IP addresses
+Hash keyed by control node hostname, containing address and authorized_keys
 
 ##### <a name="-profile_ansible--sshd_custom_cfg"></a>`sshd_custom_cfg`
 
@@ -64,4 +55,42 @@ Custom sshd configuration options for this user
 Data type: `String`
 
 Custom sudo configuration options for this user
+
+### <a name="profile_ansible--proxy"></a>`profile_ansible::proxy`
+
+Setup an optional proxy user that Ansible control nodes can use as a jump host for SSH port forwarding.
+
+#### Examples
+
+##### 
+
+```puppet
+include profile_ansible::proxy
+```
+
+#### Parameters
+
+The following parameters are available in the `profile_ansible::proxy` class:
+
+* [`username`](#-profile_ansible--proxy--username)
+* [`nodelist`](#-profile_ansible--proxy--nodelist)
+* [`sshd_custom_cfg`](#-profile_ansible--proxy--sshd_custom_cfg)
+
+##### <a name="-profile_ansible--proxy--username"></a>`username`
+
+Data type: `String`
+
+Username that ansible proxy will connect as
+
+##### <a name="-profile_ansible--proxy--nodelist"></a>`nodelist`
+
+Data type: `Hash`
+
+Hash keyed by proxy node hostname, containing address and authorized_keys
+
+##### <a name="-profile_ansible--proxy--sshd_custom_cfg"></a>`sshd_custom_cfg`
+
+Data type: `Hash`
+
+Custom sshd configuration options for this user
 
